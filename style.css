@@ -14,7 +14,8 @@ div.container {
     background-image: URL('./images/textureCalculator.webp');
     background-repeat: no-repeat;
     background-size: 100% 100%;
-     outline: none;
+    caret-color: transparent;
+
     
 }
 
@@ -32,6 +33,7 @@ div.container {
    font-family: arial;
    margin-top: 50px;
    outline: none;
+   caret-color: transparent;
 }
 .displaySolar {
    margin-top: 30px;
@@ -44,7 +46,7 @@ div.container {
    height: 30px;
    background-image: url('./images/texturePainelSolar.jpg');
    background-repeat: no repeat;
-  
+   caret-color: transparent;
    
 }
 #num7 {
@@ -134,6 +136,8 @@ button {
     border-radius: 1.3em;
     background-image: URL('./images/textureCalculator.webp');
     box-shadow: 3px 3px 0px rgb(222, 184, 135);
+    caret-color: transparent;
+    outline: none;
 }
 button:active {
     box-shadow: none;
