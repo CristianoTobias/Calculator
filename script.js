@@ -35,6 +35,9 @@ const operate = (op, x, y) => {
 }
 
 function populateDisplay(){
+    if(display.innerHTML != `Did you ran away from school?<br>You can't divide by zero!`){
+    display.style.fontSize = "25pt";
+    }
     var key = event.keyCode;
     switch(key){
      case 13: this.value = "=";
@@ -82,6 +85,7 @@ function populateDisplay(){
     }
      
     if(/[0-9.]/g.test(this.value)){
+        display.style.fontSize = "25pt";
         if(digit.length < 21){
         if(/[0-9]/g.test(this.value)){
             digit.push(this.value);
@@ -98,17 +102,26 @@ function populateDisplay(){
      if(!/[+|\-|\*|\/]/g.test(display.innerHTML)){
         expression.push(this.value);
         if(expression.length > 2){
-        operate(expression[1],expression[0], expression[2]);
-        display.innerHTML = total;
-        expression = [];
-        expression.push(total);
-        expression.push(this.value)
-        
+          if(/[\/]/g.test(expression) && expression[2] === "0"){
+             digit = [];
+             expression.pop();
+             expression.pop();
+             display.innerHTML = `Did you ran away from school?<br>You can't divide by zero!`;
+             display.style.fontSize = "20px";  
+              
+         }else{
+            operate(expression[1],expression[0], expression[2]);
+            display.innerHTML = total;
+            expression = [];
+            expression.push(total);
+            expression.push(this.value)
+         }
         }
      }
+     
     }
  }else if(/[del]/g.test(this.value)){
-     
+    display.style.fontSize = "25pt";
     if(digit.length > 0){
        backSpaceValidation = true;     
     } 
@@ -130,12 +143,19 @@ function populateDisplay(){
      expression.push(digit.join(""));
      }
      if(expression.length === 3){
+        if(/[\/]/g.test(expression) && expression[2] == 0 ){
+            display.innerHTML = `Did you ran away from school?<br>You can't divide by zero!`;
+            display.style.fontSize = "20px";
+            expression.pop();
+            digit = [];
+        }else{
+          
      operate(expression[1],expression[0], expression[2]);
      display.innerHTML = total;
      expression = [];
      digit = [];
      backSpaceValidation = false;
-     
+        }
      }
  }
  else if(/[ac]/g.test(this.value)){
@@ -143,6 +163,7 @@ function populateDisplay(){
     digit = [];
     expression = [];
     total = 0;
+    display.style.fontSize = "25pt";
 }
  
     
