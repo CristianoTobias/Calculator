@@ -27,7 +27,7 @@ div.container {
    background-color: #0b2217;
    color: #90da90;
    width: 390px;
-   height: 60px;
+   height: 80px;
    padding: 5px;
    border-radius: 10px;
    font-family: arial;
@@ -143,4 +143,10 @@ button:active {
     box-shadow: none;
     left: 5px;
     top: 5px;
+}
+span {
+    display: block;
+}
+span#displayExpression {
+    font-size: 15pt;
 }
