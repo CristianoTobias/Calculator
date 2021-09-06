@@ -6,20 +6,18 @@ let digit = [];
 let total = 0;
 let backSpaceValidation = true;
 
-
-
 const add = (x, y) =>{
-    total = parseFloat(x) + parseFloat(y);
+   return parseFloat(x) + parseFloat(y);
     
 }
 const subtration = (x, y) =>{
-    total =  parseFloat(x) - parseFloat(y);
+    return  parseFloat(x) - parseFloat(y);
 }
 const multiply = (x, y) =>{
-    total =  parseFloat(x) * parseFloat(y);
+    return  parseFloat(x) * parseFloat(y);
 }
 const divide = (x, y) =>{
-    total =  parseFloat(x) / parseFloat(y);
+    return  parseFloat(x) / parseFloat(y);
 }
 
 const operate = (op, x, y) => {
@@ -35,11 +33,34 @@ const operate = (op, x, y) => {
         default: return "Error! invalid arguments!"
     }
 }
+function calculate(expression){
+   let digit = "";
+   let calculateExpression = [];
+   for(let i = 0; i < expression.length;i++){
+    if(i == expression.length - 1){
+        digit += expression[i];
+        calculateExpression.push(digit);
+    }else if(/[\+|\-|\/|\*]/g.test(expression[i])){
+     calculateExpression.push(digit);
+     digit = "";
+     calculateExpression.push(expression[i]);
+     
+    }else{  
+    digit += expression[i];
+    }
+   }
+   
+   while(/[\+|\-|\/|\*]/g.test(calculateExpression.join(""))){
+    total = operate(calculateExpression[1], calculateExpression[0], calculateExpression[2])
+    calculateExpression.splice(0,3, total);
+    
+    }
+  
+     return total;
+
+}
 
 function populateDisplay(){
-    if(displayDigit.innerHTML != `Did you ran away from school?You can't divide by zero!`){
-    displayDigit.style.fontSize = "25pt";
-    }
     var key = event.keyCode;
     switch(key){
      case 13: this.value = "=";
@@ -85,132 +106,99 @@ function populateDisplay(){
      default:
          break;
     }
-     
-    if(/[0-9.]/g.test(this.value)){
-        displayDigit.style.fontSize = "25pt";
-         
-        if(digit.length < 21){
-
-        if(/[0-9]/g.test(this.value)){
-        if(/[=]/g.test(displayExpression.innerHTML)){
-            displayExpression.innerHTML = "";
-        }    
+    // insert numbers and point
+    if(/[0-9\.]/g.test(this.value)){
+        if(this.value === "."){
+             if(!/[\.]/g.test(digit)){
+                 // insert only one point for the number
+                 if(digit.length > 0){
+                expression.push(this.value); 
+                digit.push(this.value);
+                displayDigit.innerHTML = digit.join("");
+                displayExpression.innerHTML = expression.join("");
+                 }
+                 
+             }
+         }else{             
+            expression.push(this.value);
             digit.push(this.value);
-        }else if(!/[\.]/g.test(digit)){
-            digit.push(this.value);
-        }    
-        }
-        if(/[/[+|\-|\*|\/]/g.test(displayExpression.innerHTML)){
-        displayDigit.innerHTML = digit.join("");
-        displayExpression.innerHTML += this.value;
-        }else{
-            displayExpression.innerHTML = "";
             displayDigit.innerHTML = digit.join("");
-            displayExpression.innerHTML += digit.join(""); 
-        }
-        
-        
-    
-    
- }else if(/[+|\-|\*|\/]/g.test(this.value)){
-    if(digit.length > 0){
-      expression.push(digit.join(""));
-      digit = [];
-      displayExpression.innerHTML += this.value;
-     if(!/[+|\-|\*|\/]/g.test(displayDigit.innerHTML)){
-        expression.push(this.value);
-        
-        if(expression.length > 2){
-          if(/[\/]/g.test(expression) && expression[2] === "0"){
-             digit = [];
-             expression.pop();
-             expression.pop();
-             displayDigit.innerHTML = `Did you ran away from school?<br>You can't divide by zero!`;
-             displayDigit.style.fontSize = "20px";  
-              
-         }else{
-            operate(expression[1],expression[0], expression[2]);
-            displayDigit.innerHTML = total;
             displayExpression.innerHTML = expression.join("");
-            expression = [];
-            expression.push(total);
+         }   
+        
+       backSpaceValidation = true; 
+     // Insert function +-/*   
+     }else if(/[\+|\-|\/|\*]/g.test(this.value)){
+        if(/[\/]/g.test(expression.join("")) &&  expression[expression.length - 1] === "0"){
+            expression.pop();
+            digit.pop();
+            displayExpression.innerHTML = "You can't divide by zero!:(";
+            
+    }
+        else if(digit.length > 0){
+            digit = [];
+            displayDigit.innerHTML = "=" + calculate(expression);
             expression.push(this.value)
+            displayExpression.innerHTML = expression.join("");
+            backSpaceValidation = true;
+          }
+         
+          
+     }else if(/[del]/g.test(this.value)){
+        if(backSpaceValidation){
+        
+         if(/[\+|\-|\/|\*]/g.test(expression[expression.length - 1])){
+            
+            expression.pop();
+            for(let i = 0; i < expression.length;i++){
+                 if(/[\+|\-|\/|\*]/g.test(expression[i])){
+                    digit = [];
+                    
+                 }else{
+                     digit.push(expression[i])
+
+                 }    
+                
+            }
+            displayDigit.innerHTML = digit.join("");
+            displayExpression.innerHTML = expression.join("");
+         }else{
+         digit.pop();
+         expression.pop();
+         displayDigit.innerHTML = digit.join("");
+         displayExpression.innerHTML = expression.join("");
+         if(digit.length === 0){
+            displayDigit.innerHTML = "0";
+            if(expression.length === 0){
+            displayExpression.innerHTML = "0"; 
+            } 
          }
         }
-     }
-     
-    }
- }else if(/[del]/g.test(this.value)){
-    displayDigit.style.fontSize = "25pt";
-    if(digit.length > 0){
-       backSpaceValidation = true;     
     } 
-    if(backSpaceValidation){
-    
-     digit.pop();
-    if(digit.length === 0 ){
-        displayDigit.innerHTML = "0";
-        if(/[/[+|\-|\*|\/]/g.test(displayExpression.innerHTML)){
-            let aux1 =  displayExpression.innerHTML;
-            let auxSplit1 = aux1.split("");
-            auxSplit1.pop();
-            displayExpression.innerHTML = auxSplit1.join("");
-            backSpaceValidation = false;
+     }else if(/[ac]/g.test(this.value)){
         
-        }else{
+        digit = [];
+        expression = [];
         displayExpression.innerHTML = "0";
-        }
-    }else{
-    displayDigit.innerHTML = digit.join("");
-    if(/[/[+|\-|\*|\/]/g.test(displayExpression.innerHTML)){
-        let aux =  displayExpression.innerHTML;
-        let auxSplit = aux.split("");
-        auxSplit.pop();
-        displayExpression.innerHTML = auxSplit.join("");
-       
-    }else{
-     displayExpression.innerHTML = digit.join("");
-    }
-    
-    }
-    }
-    if(digit.length == 0 && displayDigit.innerHTML != total){
-       backSpaceValidation = false;
         displayDigit.innerHTML = "0";
+        total = 0;
         
-    }
-    
- }else if(/[=]/g.test(this.value)){
-     if(digit.length > 0){
-     expression.push(digit.join(""));
-     }
-     if(expression.length === 3){
-        if(/[\/]/g.test(expression) && expression[2] == 0 ){
-            displayDigit.innerHTML = `Did you ran away from school?<br>You can't divide by zero!`;
-            displayDigit.style.fontSize = "20px";
+        
+    }else if(/[=]/g.test(this.value)){
+        if(/[\/]/g.test(expression.join("")) &&  expression[expression.length - 1] === "0"){
             expression.pop();
-            digit = [];
-        }else{
-          
-     operate(expression[1],expression[0], expression[2]);
-     displayDigit.innerHTML = total;
-     displayExpression.innerHTML = expression.join("") + "=" + total;
-     expression = [];
-     digit = [];
-     backSpaceValidation = false;
+            digit.pop();
+            displayExpression.innerHTML = "You can't divide by zero!:(";
+            
+    }else if(/[\+|\-|\/|\*]/g.test(expression.join("")) && /[0-9\.]/g.test(expression[expression.length -1])){
+       displayDigit.innerHTML = calculate(expression);
+       displayExpression.innerHTML = expression.join("") + "=";
+       digit = [];
+       expression = [];
+       backSpaceValidation = false;
         }
-     }
- }
- else if(/[ac]/g.test(this.value)){
-    displayDigit.innerHTML = "0";
-    displayExpression.innerHTML = "0";
-    digit = [];
-    expression = [];
-    total = 0;
-    displayDigit.style.fontSize = "25pt";
-}
- 
-    
+    }
+   
   }
 
 
